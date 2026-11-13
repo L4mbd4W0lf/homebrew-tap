@@ -1,0 +1,23 @@
+# macOS system files
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Editor & IDE directories
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Temporary archives & installers (used when testing/calculating sha256)
+*.dmg
+*.pkg
+*.zip
+*.tar.gz
+*.tgz
+
+# Ruby / Bundler (if you use local Ruby tools or RuboCop)
+.bundle/
+vendor/bundle/
