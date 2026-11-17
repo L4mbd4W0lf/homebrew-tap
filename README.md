@@ -7,6 +7,7 @@ A Homebrew tap for my macOS applications and command-line tools. More formulae a
 | Name | Type | Description |
 | :--- | :--- | :--- |
 | `mydumper` | Formula | Source-built MyDumper and MyLoader, linked against Homebrew's `mysql-client`. |
+| `cerberusssh` | Cask | [CerberusSSH](https://github.com/L4mbd4W0lf/cerberus-ssh), a native macOS SSH client with a local-first vault. |
 
 ## Installation
 
@@ -23,7 +24,21 @@ brew tap L4mbd4W0lf/tap
 brew install mydumper
 ```
 
-When casks are added, they can be installed directly with `brew install --cask L4mbd4W0lf/tap/<cask-name>` or by tapping first and running `brew install --cask <cask-name>`.
+Install a cask the same way, with `--cask`:
+
+```sh
+brew install --cask L4mbd4W0lf/tap/cerberusssh
+```
+
+## CerberusSSH
+
+CerberusSSH requires macOS 26 or later. It is not notarised yet, so macOS refuses to open it until the quarantine flag is cleared. After installing, and after each upgrade, run once:
+
+```sh
+xattr -dr com.apple.quarantine /Applications/CerberusSSH.app
+```
+
+To update the cask for a new release, set `version` and `sha256` in `Casks/cerberusssh.rb` to what the CerberusSSH release script prints.
 
 ## MyDumper
 
