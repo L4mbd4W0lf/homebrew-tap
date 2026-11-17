@@ -32,7 +32,21 @@ brew install --cask L4mbd4W0lf/tap/cerberusssh
 
 ## CerberusSSH
 
-CerberusSSH requires macOS 26 or later. It is not notarised yet, so macOS refuses to open it until the quarantine flag is cleared. After installing, and after each upgrade, run once:
+CerberusSSH requires macOS 26 or later.
+
+Homebrew loads casks only from taps you have trusted. The first time, before installing, run:
+
+```sh
+brew trust L4mbd4W0lf/tap
+```
+
+If CerberusSSH is already in Applications from the disk image, Homebrew will not overwrite it. Add `--force` to replace it with the Homebrew copy, which Homebrew then upgrades and uninstalls for you. Your hosts, vault and settings are kept, since they are stored outside the app:
+
+```sh
+brew install --cask --force L4mbd4W0lf/tap/cerberusssh
+```
+
+It is not notarised yet, so macOS refuses to open it until the quarantine flag is cleared. After installing, and after each upgrade, run once:
 
 ```sh
 xattr -dr com.apple.quarantine /Applications/CerberusSSH.app
