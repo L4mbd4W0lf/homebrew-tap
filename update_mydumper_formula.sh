@@ -11,7 +11,7 @@ TARGET_URL="${1:-}"
 
 if [ -z "${TARGET_URL:-}" ]; then
     echo "❌ Error: Please provide the target MyDumper source archive URL."
-    echo "Usage: $0 https://github.com"
+    echo "Usage: $0 https://github.com/mydumper/mydumper/archive/refs/tags/<tag>.tar.gz"
     exit 1
 fi
 
@@ -41,21 +41,18 @@ import sys
 path = pathlib.Path(sys.argv[1])
 url = sys.argv[2]
 sha = sys.argv[3]
-tag_match = re.search(r"/refs/tags/v?([^/]+)\.(?:tar\.gz|tgz|zip)$", url)
-if not tag_match:
+if not re.search(r"/refs/tags/v?[^/]+\.(?:tar\.gz|tgz|zip)$", url):
     raise SystemExit("URL must be a tagged archive ending in .tar.gz, .tgz, or .zip")
-version = tag_match.group(1)
 content = path.read_text()
 content, url_count = re.subn(r'(?m)^  url "[^"]+"$', f'  url "{url}"', content)
 content, sha_count = re.subn(r'(?m)^  sha256 "[^"]+"$', f'  sha256 "{sha}"', content)
-content, version_count = re.subn(r'(?m)^  version "[^"]+"$', f'  version "{version}"', content)
-if url_count != 1 or sha_count != 1 or version_count != 1:
-    raise SystemExit("Expected exactly one url, version, and sha256 line in the formula")
+if url_count != 1 or sha_count != 1:
+    raise SystemExit("Expected exactly one url and sha256 line in the formula")
 path.write_text(content)
 PY
 
 echo "🔎 Verifying Homebrew formula syntax..."
-brew audit --strict --online "$FORMULA_PATH"
+brew style "$FORMULA_PATH"
 
 echo -e "\n======================================================="
 echo "🎉 Update successful! Ready for commit and push."

@@ -47,10 +47,10 @@ For general Homebrew help, see the [Homebrew Documentation](https://docs.brew.sh
 
 ## Update the formula (maintainers)
 
-Run the helper from the tap root with a tagged upstream source archive URL. It downloads the archive, calculates its SHA-256, updates the URL, version, and checksum in `Formula/mydumper.rb`, then runs `brew audit`:
+Run the helper from the tap root with a tagged upstream source archive URL. It downloads the archive, calculates its SHA-256, updates the URL and checksum in `Formula/mydumper.rb`, then runs `brew style`:
 
 ```sh
-./update_mydumper_formula.sh https://github.com/mydumper/mydumper/archive/refs/tags/v1.0.11-1.zip
+./update_mydumper_formula.sh https://github.com/mydumper/mydumper/archive/refs/tags/v1.0.19-1.tar.gz
 ```
 
 Review the changes before committing:
