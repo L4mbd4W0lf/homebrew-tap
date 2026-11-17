@@ -7,61 +7,62 @@ A Homebrew tap for my macOS applications and command-line tools. More formulae a
 | Name | Type | Description |
 | :--- | :--- | :--- |
 | `mydumper` | Formula | Source-built MyDumper and MyLoader, linked against Homebrew's `mysql-client`. |
-| `cerberusssh` | Cask | [CerberusSSH](https://github.com/L4mbd4W0lf/cerberus-ssh), a native macOS SSH client with a local-first vault. |
+| `cerberusssh` | Cask | [CerberusSSH](https://github.com/L4mbd4W0lf/cerberus-ssh), a native macOS SSH client with a local-first vault. Not notarised yet (see [Apps that are not notarised](#apps-that-are-not-notarised)). |
 
-## Installation
+## Getting started
 
-Install a formula directly from the tap:
-
-```sh
-brew install L4mbd4W0lf/tap/mydumper
-```
-
-Or add the tap once, then install formulae by name:
-
-```sh
-brew tap L4mbd4W0lf/tap
-brew install mydumper
-```
-
-Install a cask the same way, with `--cask`:
-
-```sh
-brew install --cask L4mbd4W0lf/tap/cerberusssh
-```
-
-## CerberusSSH
-
-CerberusSSH requires macOS 26 or later.
-
-Homebrew loads casks only from taps you have trusted. The first time, before installing, run:
+Homebrew loads formulae and casks only from taps you have trusted. Trust this tap once, before installing anything from it:
 
 ```sh
 brew trust L4mbd4W0lf/tap
 ```
 
-If CerberusSSH is already in Applications from the disk image, Homebrew will not overwrite it. Add `--force` to replace it with the Homebrew copy, which Homebrew then upgrades and uninstalls for you. Your hosts, vault and settings are kept, since they are stored outside the app:
+## Installation
+
+Install a formula or a cask directly from the tap:
 
 ```sh
-brew install --cask --force L4mbd4W0lf/tap/cerberusssh
+brew install L4mbd4W0lf/tap/<formula>
+brew install --cask L4mbd4W0lf/tap/<cask>
 ```
 
-It is not notarised yet, so macOS refuses to open it until the quarantine flag is cleared. After installing, and after each upgrade, run once:
+Or add the tap once, then install by name:
 
 ```sh
-xattr -dr com.apple.quarantine /Applications/CerberusSSH.app
+brew tap L4mbd4W0lf/tap
+brew install <formula>
+brew install --cask <cask>
 ```
 
-To update the cask for a new release, set `version` and `sha256` in `Casks/cerberusssh.rb` to what the CerberusSSH release script prints.
-
-## MyDumper
-
-The formula builds [`mydumper`](https://github.com/mydumper/mydumper) and `myloader` from source. Homebrew installs the default configuration at `$(brew --prefix)/etc/mydumper.cnf`. If needed, pass its location explicitly:
+Upgrade and uninstall as with any Homebrew package:
 
 ```sh
-mydumper --defaults-file="$(brew --prefix)/etc/mydumper.cnf" --version
-myloader --defaults-file="$(brew --prefix)/etc/mydumper.cnf" --version
+brew upgrade <formula>
+brew upgrade --cask <cask>
+brew uninstall --cask <cask>
 ```
+
+### Replacing an app installed outside Homebrew
+
+If an app is already in Applications, for example from a disk image, Homebrew will not overwrite it. Add `--force` to replace it with the Homebrew copy, which Homebrew then upgrades and uninstalls for you:
+
+```sh
+brew install --cask --force L4mbd4W0lf/tap/<cask>
+```
+
+Only the app is replaced. Its settings and data, which are stored outside the app, are kept.
+
+### Apps that are not notarised
+
+macOS refuses to open an app that is not notarised by Apple until its quarantine flag is cleared. Such casks say so when installed (`brew info --cask <cask>` shows it again). After installing, and after each upgrade, run once:
+
+```sh
+xattr -dr com.apple.quarantine /Applications/<App>.app
+```
+
+## Notes
+
+- **mydumper:** Homebrew installs the default configuration at `$(brew --prefix)/etc/mydumper.cnf`. If needed, pass its location explicitly, for example `mydumper --defaults-file="$(brew --prefix)/etc/mydumper.cnf" --version`.
 
 ## Troubleshooting
 
@@ -69,25 +70,35 @@ If an installation or update fails, update Homebrew and refresh the tap before r
 
 ```sh
 brew update
-brew reinstall mydumper
+brew reinstall <formula>
+brew reinstall --cask <cask>
 ```
+
+If Homebrew refuses to load something from this tap, check that you have trusted it (see [Getting started](#getting-started)).
 
 For general Homebrew help, see the [Homebrew Documentation](https://docs.brew.sh).
 
-## Update the formula (maintainers)
+## Maintainers
 
-Run the helper from the tap root with a tagged upstream source archive URL. It downloads the archive, calculates its SHA-256, updates the URL and checksum in `Formula/mydumper.rb`, then runs `brew style`:
+### Updating a formula or cask
+
+A new release needs its `version` (or `url`) and `sha256` updated in `Formula/<name>.rb` or `Casks/<name>.rb`. Check the change before committing:
+
+```sh
+brew style Formula/<name>.rb Casks/<name>.rb
+brew audit --online L4mbd4W0lf/tap/<name>
+```
+
+Audit warnings about notability, pre-releases or Gatekeeper apply to Homebrew's official repositories and do not block installing from this tap.
+
+### Helper scripts
+
+`update_mydumper_formula.sh` updates `Formula/mydumper.rb` from a tagged upstream source archive URL: it downloads the archive, calculates its SHA-256, updates the URL and checksum, then runs `brew style`. Run it from the tap root:
 
 ```sh
 ./update_mydumper_formula.sh https://github.com/mydumper/mydumper/archive/refs/tags/v1.0.19-1.tar.gz
 ```
 
-Review the changes before committing:
+It expects an archive URL whose filename ends in `.zip`, `.tar.gz`, or `.tgz` and whose tag is in the `/refs/tags/` path. It requires `curl`, `shasum`, Python 3, and Homebrew.
 
-```sh
-git diff -- Formula/mydumper.rb
-git add Formula/mydumper.rb
-git commit -m "Update MyDumper"
-```
-
-The helper expects an archive URL whose filename ends in `.zip`, `.tar.gz`, or `.tgz` and whose tag is in the `/refs/tags/` path. It requires `curl`, `shasum`, Python 3, and Homebrew.
+For CerberusSSH, set `version` and `sha256` in `Casks/cerberusssh.rb` to what the CerberusSSH release script prints.
