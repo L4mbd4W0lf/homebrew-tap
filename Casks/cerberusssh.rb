@@ -1,6 +1,6 @@
 cask "cerberusssh" do
-  version "0.3.3"
-  sha256 "f31134776194d3e7cda077f8045a0be4010a838258b79a489194d80a539e45cf"
+  version "0.3.4"
+  sha256 "e0c98a92ad44d305a00bed6c01f882ffb30255b02345cbfca2125fbe56245cc1"
 
   url "https://github.com/L4mbd4W0lf/cerberus-ssh/releases/download/v#{version}/CerberusSSH-#{version}.zip"
   name "CerberusSSH"
